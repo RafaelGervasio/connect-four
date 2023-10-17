@@ -14,7 +14,7 @@ module Board
         flat_board = self.board.flatten
         flat_board.none? {|elem| elem == 'empty'}
     end
-    def check_horiz
+    def check_horiz?
         count = 0
         check = false
         self.turn == self.p1 ? symbol = 'X' : symbol = 'O'
@@ -26,7 +26,7 @@ module Board
         end
         check
     end
-    def check_vert
+    def check_vert?
         self.turn == self.p1 ? symbol = 'X' : symbol = 'O'
         check = false
         i = 0
@@ -41,18 +41,62 @@ module Board
         end
         check
     end
-    def check_diag
-       #start at the bottom
-       #look at a symbol
-       #check diag right
-            #if there's one, good. else
-        #check diag left
-            #if there's one good. else
-        #next elem
+    def check_diag_right(row, collumn)
+        self.turn == self.p1 ? symbol = 'X' : symbol = 'O' 
+        count = 0
 
+        until board[row].nil? || board[row][collumn].nil?
+            board[row][collumn] == symbol ? count+=1 : count = 0
+            count == 4 ? check = true : ''
+            collumn+=1
+            row -= 1
+        end
+        check
+    end
+
+    def check_diag_left (row, collumn)
+        self.turn == self.p1 ? symbol = 'X' : symbol = 'O' 
+        count = 0
+
+        until board[row].nil? || board[row][collumn].nil?
+            board[row][collumn] == symbol ? count+=1 : count = 0
+            count == 4 ? check = true : ''
+            collumn-=1
+            row -=1
+        end
+        check
+    end
+
+
+    def check_diag?
+       check = false
+       func_check = false
+
+       row = -1
+       collumn = 0 
+       4.times do 
+            if check_diag_right(row, collumn) == true
+                func_check = true
+            end
+
+            row = -1
+            collumn+=1
+        end
+
+        row = -1
+        collumn = 3
+        4.times do
+            if check_diag_left(row, collumn) == true
+                func_check = true
+            end
+            row = -1
+            collumn += 1
+        end
+
+        func_check
     end
     def game_over?
-        return true if game_over? || check_horiz || check_diag || check_vert
+        return true if board_full?() || check_horiz?() || check_diag?() || check_vert?()
     end
     def update_board (collumn)
         updated = false
@@ -111,17 +155,3 @@ class Game
 end
 
 
-
-gm = Game.new
-gm.board = [
-    %w[X X X empty X X X],
-    %w[X X X X empty empty empty],
-    %w[X X empty empty empty empty empty],
-    %w[empty X empty empty empty empty empty],
-    %w[empty empty empty empty empty empty empty],
-    %w[empty empty O X X X empty]
-  ]
-gm.p1 = 'Rafa'
-gm.p2 = 'Jack'
-gm.turn = gm.p1
-gm.check_vert

@@ -143,7 +143,7 @@ describe Board do
         %w[empty empty empty empty empty empty empty],
         %w[empty empty empty empty empty empty empty]
       ]
-      expect(gm.check_horiz).to be true
+      expect(gm.check_horiz?).to be true
     end
     it 'retruns false when no horizontal 4 exists' do
       gm.p1 = 'Rafa'
@@ -157,7 +157,7 @@ describe Board do
         %w[empty empty empty empty empty empty empty],
         %w[empty empty O X X X empty]
       ]
-      expect(gm.check_horiz).to be false
+      expect(gm.check_horiz?).to be false
     end
   end
   context 'check_vert' do
@@ -173,15 +173,67 @@ describe Board do
       gm.p1 = 'Rafa'
       gm.p2 = 'Jack'
       gm.turn = gm.p1
-      expect(gm.check_vert).to be true
+      expect(gm.check_vert?).to be true
     end
     it 'returns false when no 4 vertical exist' do
-      gm.p1 = 'Rafa'
-      gm.p2 = 'Jack'
-      gm.turn = gm.p2
-      expect(gm.check_vert).to be false
+        gm.board = [
+            %w[X X X empty X X X],
+            %w[X X X empty empty empty empty],
+            %w[X X empty empty empty empty empty],
+            %w[empty O empty empty empty empty empty],
+            %w[empty empty empty empty empty empty empty],
+            %w[empty empty O X X X empty]
+          ]
+        gm.p1 = 'Rafa'
+        gm.p2 = 'Jack'
+        gm.turn = gm.p2
+        expect(gm.check_vert?).to be false
     end
   end
+  context "check_diag" do
+    it "returns true when there's 4 diag" do
+        gm.board = [
+          %w[empty empty empty empty empty empty empty],
+          %w[empty empty empty empty empty empty empty],
+          %w[empty empty empty empty empty X empty],
+          %w[empty empty empty empty X empty empty],
+          %w[empty empty empty X empty empty empty],
+          %w[empty empty X empty empty empty empty]
+        ]
+        gm.p1 = 'Rafa'
+        gm.p2 = 'Jack'
+        gm.turn = gm.p1
+        expect(gm.check_diag?).to be true
+    end
+    it "returns true when there's 4 diag" do
+        gm.board = [
+          %w[empty empty empty empty empty empty empty],
+          %w[empty empty empty empty empty empty empty],
+          %w[O empty empty empty empty X empty],
+          %w[empty O empty empty X empty empty],
+          %w[empty empty O empty empty empty empty],
+          %w[empty empty empty O empty empty empty]
+        ]
+        gm.p1 = 'Rafa'
+        gm.p2 = 'Jack'
+        gm.turn = gm.p2
+        expect(gm.check_diag?).to be true
+    end
+    it "returns false when there's no 4 diag" do
+        gm.board = [
+            %w[empty empty empty empty empty empty empty],
+            %w[empty empty empty empty empty empty O],
+            %w[empty empty empty empty empty empty empty],
+            %w[empty empty empty empty X empty empty],
+            %w[empty empty empty X empty empty empty],
+            %w[empty empty X empty empty empty empty]
+          ]
+          gm.p1 = 'Rafa'
+          gm.p2 = 'Jack'
+          gm.turn = gm.p1
+          expect(gm.check_diag?).to be false
+        end
+    end
 end
 
 describe Player do
