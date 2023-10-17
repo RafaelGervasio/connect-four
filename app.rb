@@ -96,7 +96,10 @@ module Board
         func_check
     end
     def game_over?
-        return true if board_full?() || check_horiz?() || check_diag?() || check_vert?()
+        if board_full?() || check_horiz?() || check_diag?() || check_vert?() == true
+            puts "Game over. #{self.turn} wins!"
+            true
+        end
     end
     def update_board (collumn)
         updated = false
@@ -104,7 +107,6 @@ module Board
             if row[collumn - 1] == 'empty'
                 next
             else
-                p i
                 self.turn == self.p1 ? self.board[i-1][collumn - 1] = 'X' : self.board[i-1][collumn - 1] = 'O'
                 updated = true
                 break
@@ -142,7 +144,7 @@ module Player
     end
 
     def make_move
-        puts "What collumn do you want to drop your disk in?"
+        puts "It's #{self.turn}'s move. What collumn do you want to drop your disk in?"
         user_input = gets.chomp.to_i
         update_board(user_input)
     end
@@ -152,6 +154,27 @@ end
 class Game
     include Board
     include Player
+
+    def game_driver
+        create_board()
+        create_player()
+        create_player()
+        decide_starter()
+        display_board()
+
+        until game_over?()
+            make_move()
+            unless game_over?()
+                change_turn()
+            end
+            display_board()
+            puts '---------------'
+            puts '---------------'
+        end
+    end
 end
+
+g = Game.new
+g.game_driver
 
 
