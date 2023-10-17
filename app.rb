@@ -10,6 +10,50 @@ module Board
         puts "--- Game Board ---"
         board.each {|row| p row}
     end
+    def board_full?
+        flat_board = self.board.flatten
+        flat_board.none? {|elem| elem == 'empty'}
+    end
+    def check_horiz
+        count = 0
+        check = false
+        self.turn == self.p1 ? symbol = 'X' : symbol = 'O'
+        self.board.each do |row|
+            row.each do |value|
+                value == symbol ? count+=1 : count = 0
+                count >= 4 ? check = true : ''
+            end
+        end
+        check
+    end
+    def check_vert
+        self.turn == self.p1 ? symbol = 'X' : symbol = 'O'
+        check = false
+        i = 0
+        while i < 7 do
+            new_arr = self.board.map {|row| row[i]}
+            count = 0
+            new_arr.each do |elem|
+                elem == symbol ? count+=1 : count = 0
+                count >= 4 ? check = true : ''
+            end
+            i+=1
+        end
+        check
+    end
+    def check_diag
+       #start at the bottom
+       #look at a symbol
+       #check diag right
+            #if there's one, good. else
+        #check diag left
+            #if there's one good. else
+        #next elem
+
+    end
+    def game_over?
+        return true if game_over? || check_horiz || check_diag || check_vert
+    end
     def update_board (collumn)
         updated = false
         self.board.each_with_index do |row, i|
@@ -27,6 +71,7 @@ module Board
         end
         self.board
     end
+
 end
 
 module Player
@@ -66,8 +111,17 @@ class Game
 end
 
 
-# gm = Game.new
-# gm.create_board
-# gm.create_player
-# gm.make_move
-# gm.display_board
+
+gm = Game.new
+gm.board = [
+    %w[X X X empty X X X],
+    %w[X X X X empty empty empty],
+    %w[X X empty empty empty empty empty],
+    %w[empty X empty empty empty empty empty],
+    %w[empty empty empty empty empty empty empty],
+    %w[empty empty O X X X empty]
+  ]
+gm.p1 = 'Rafa'
+gm.p2 = 'Jack'
+gm.turn = gm.p1
+gm.check_vert
